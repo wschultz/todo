@@ -16,8 +16,7 @@ def initialize():
     with open('todo.json') as file:
       todos = json.load(file)
       for key, value in todos.items():
-        desc, time, status = value
-        todos[key] = Todo(desc=desc, time=time, status=status)
+        todos[key] = Todo(*value)
 
     if type(todos) is not dict:
       todos = dict()
@@ -71,8 +70,7 @@ if __name__ == "__main__":
           print("It doesn't appear that we've got any yet, let's get to work!")
         else:
           for key, value in todos.items():
-            desc, time, status = value
-            print("\n* Label is: {}\n  Description: {}\n  Status is: {}\n  Created on: {}".format(key, desc, status, time))
+            print("\n* Label is: {}\n  Description: {}\n  Status is: {}\n  Created on: {}".format(key, *value))
       except Exception as e:
         print(e)
 
