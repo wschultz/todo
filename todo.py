@@ -4,7 +4,8 @@ import collections
 import datetime
 import json
 
-Todo = collections.namedtuple('Todo', 'desc time status')
+Todo = collections.namedtuple('Todo', 'desc time status priority')
+todos = dict()
 
 
 def initialize():
@@ -27,10 +28,10 @@ def initialize():
   return(todos)
 
 
-def add_todo(label, desc, time, status):
+def add_todo(label, desc, time, status, priority):
   ''' Here's where we add a new ToDo into the dict
   '''
-  todos[label] = Todo(desc=desc, time=time, status=status)
+  todos[label] = Todo(desc=desc, time=time, status=status, priority=priority)
   save_file()
 
   return(todos)
@@ -41,6 +42,7 @@ def delete_todo(todo):
   '''
   del todos[todo]
   save_file()
+
   return(todos)
 
 
@@ -69,22 +71,52 @@ if __name__ == "__main__":
         if todos == {}:
           print("It doesn't appear that we've got any yet, let's get to work!")
         else:
+          num_priorities = collections.defaultdict(int)
           for key, value in todos.items():
-            desc, time, status = value
-            print("\n* Label is: {}\n  Description: {}\n  Created on: {}\n  Status is: {}".format(key, *value))
+            desc, time, status, priority = value
+            num_priorities[priority] += 1
+            print("\n* Label is: {}\n  Description: {}\n  Created on: {}\n  Status is: {}\n  Priority is: {}".format(key, *value))
+
+          for k,v in num_priorities.items():
+            if v > 1:
+              print("\n   the priority {} shows up {} times".format(k, v))
+
+          mylist = []
+
+          for k,v in num_priorities.items():
+            mylist.append(k)
+
+          mylist.sort()
+          mynewlist = range(mylist[0], mylist[-1])
+          myothernewlist = []
+
+          for num in mynewlist:
+            if num not in mylist:
+              myothernewlist.append(num)
+
+          print("\nThe following priorities don't exist: " + ' '.join(str(e) for e in myothernewlist))
+
+
+
       except Exception as e:
         print(e)
 
     elif loop == "2":
-      print("\nOkay, let's add a to-do in the format of label, description, status\n")
-      label  = input("What is the label? ")
-      desc   = input("What is the description? ")
-      status = input("What is the status? ")
-      time   = str(datetime.datetime.now())
-      if label in todos.keys():
-        print("\nSorry, that label already exists... Please try again...")
-      else:
-        add_todo(label, desc, time, status)
+      print("\nOkay, let's add a to-do in the format of label, description, status, priority\n")
+      try:
+        label    = input("What is the label? ")
+        desc     = input("What is the description? ")
+        status   = input("What is the status? ")
+        priority = int(input("What is the priority? "))
+        time     = str(datetime.datetime.now())
+        if label in todos.keys():
+          print("\nSorry, that label already exists... Please try again...")
+        else:
+          add_todo(label, desc, time, status, priority)
+
+      except Exception as e:
+        print("\nThis field needs to be a number, the actual error is " + str(e) + "please report that error to your friendly neighborhood sytem administrator")
+        loop == True
 
     elif loop == "3":
       delete_me = input("\n Okay, let's delete a to-do... what's the label? ")
