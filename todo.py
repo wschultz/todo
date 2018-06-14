@@ -70,16 +70,17 @@ if __name__ == "__main__":
           print("It doesn't appear that we've got any yet, let's get to work!")
         else:
           for key, value in todos.items():
-            print("\n* Label is: {}\n  Description: {}\n  Status is: {}\n  Created on: {}".format(key, *value))
+            desc, time, status = value
+            print("\n* Label is: {}\n  Description: {}\n  Created on: {}\n  Status is: {}".format(key, *value))
       except Exception as e:
         print(e)
 
     elif loop == "2":
       print("\nOkay, let's add a to-do in the format of label, description, status\n")
-      label = input("What is the label? ")
-      desc = input("What is the description? ")
+      label  = input("What is the label? ")
+      desc   = input("What is the description? ")
       status = input("What is the status? ")
-      time = str(datetime.datetime.now())
+      time   = str(datetime.datetime.now())
       if label in todos.keys():
         print("\nSorry, that label already exists... Please try again...")
       else:
